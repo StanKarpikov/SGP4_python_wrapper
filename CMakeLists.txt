@@ -4,6 +4,9 @@ project(SGP4_cpp_wrapper_project VERSION 0.0.1 DESCRIPTION "SGP4 library wrapper
 
 option(TEST_E "Test as executable" OFF)
 
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 --no-undefined")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0 --no-undefined")
+
 set(SOURCE 
 	SGP4_cpp_wrapper.cpp
 	wrap.cpp
@@ -28,26 +31,20 @@ add_library(SGP4 SHARED IMPORTED)
 set_property(TARGET SGP4 PROPERTY IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/SGP4/libSGP4.so)
 target_link_libraries(SGP4_cpp_wrapper SGP4)
 
-find_package(Boost REQUIRED COMPONENTS python)
-if (Boost_FOUND)
-  message("Boost package directories: ${Boost_INCLUDE_DIRS}")
-  message("Boost package libraries: ${Boost_LIBRARIES}")
-  target_include_directories(SGP4_cpp_wrapper PRIVATE ${Boost_INCLUDE_DIRS})
-  target_link_libraries (SGP4_cpp_wrapper ${Boost_LIBRARIES})
-else()
-  message("Boost package needed")
-  return()
-endif (Boost_FOUND)
+find_package(Python 3.7 EXACT COMPONENTS Development)
+find_package(PythonInterp 3.7 EXACT)
+find_package(PythonLibs 3.7 EXACT)
+find_package(Boost REQUIRED COMPONENTS system python3)
 
-find_package(Python3 REQUIRED COMPONENTS Development)
-if (Python3_FOUND)
-  message("Python3 package directories: ${Python3_INCLUDE_DIRS}")
-  message("Python3 package libraries: ${Python3_LIBRARIES}")
-  target_include_directories(SGP4_cpp_wrapper PRIVATE ${Python3_INCLUDE_DIRS})
-  target_link_libraries (SGP4_cpp_wrapper ${Python3_LIBRARIES})
-else()
-  message("Python3 package needed")
-  return()
-endif (Python3_FOUND)
+message("Boost package directories: ${Boost_INCLUDE_DIRS}")
+message("Boost package libraries: ${Boost_LIBRARIES}")
+target_include_directories(SGP4_cpp_wrapper PRIVATE ${Boost_INCLUDE_DIRS})
+target_link_libraries (SGP4_cpp_wrapper ${Boost_LIBRARIES})
+
+message("Python3 package directories: ${Python_INCLUDE_DIRS}")
+message("Python3 package libraries: ${Python_LIBRARIES}")
+target_include_directories(SGP4_cpp_wrapper PRIVATE ${Python_INCLUDE_DIRS} ${PythonLibs_LIBRARIES})
+target_link_libraries (SGP4_cpp_wrapper ${Python_LIBRARIES} ${PythonLibs_LIBRARIES})
+
 
 

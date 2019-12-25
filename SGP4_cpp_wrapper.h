@@ -4,13 +4,17 @@
 
 using std::string;
 
-class SGP4_cpp_wrapper
-{
-	public:
-		SGP4_cpp_wrapper(void);
-				
-		string get_version(void);
-		elsetrec create_object(string longstr1, string longstr2);
-		double get_jday(int year, int month, int day, int hour, int minute, double second);
-		void propagate(elsetrec &satrec, int year, int month, int day, int hour, int minute, double second, double ro[3], double vo[3]);
-};
+typedef struct position_s{
+	 double ro_x;
+	 double ro_y;
+	 double ro_z;
+	 double vo_x;
+	 double vo_y;
+	 double vo_z;
+}position_s;
+
+string get_version(void);
+elsetrec create_object(string longstr1, string longstr2);
+double get_jday(int year, int month, int day, int hour, int minute, double second);
+position_s propagate(elsetrec &satrec, int year, int month, int day, int hour, int minute, double second);
+
